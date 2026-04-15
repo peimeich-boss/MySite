@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 AI 智能旅行規劃師 - 六福莊尊榮兒童月行程 (終極版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #fafaf9; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .check-item input:checked + span { text-decoration: line-through; color: #a8a29e; }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <header class="bg-amber-600 text-white shadow-md p-5 text-center relative">
+        <h1 class="text-2xl font-bold">🦒 六福莊生態親子輕旅行 (終極攻略版)</h1>
+        <p class="text-amber-100 text-sm mt-2">2大1小 ｜ 4/30 - 5/1 ｜ 動物互動大滿貫 x 設施挑戰</p>
+    </header>
+
+    <nav class="flex overflow-x-auto p-4 gap-2 bg-white shadow-sm sticky top-0 z-50">
+        <button onclick="switchTab('overview')" class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors bg-orange-500 text-white" data-target="overview">🏠 總覽與工具</button>
+        <button onclick="switchTab('timeline')" class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors bg-orange-100 text-orange-800" data-target="timeline">⏳ 每日行程</button>
+        <button onclick="switchTab('rides')" class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors bg-orange-100 text-orange-800" data-target="rides">🎠 設施備案</button>
+        <button onclick="switchTab('prep')" class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors bg-orange-100 text-orange-800" data-target="prep">🎒 行前預約</button>
+    </nav>
+
+    <main class="p-4 max-w-4xl mx-auto mb-10">
+
+        <section id="overview" class="tab-content active space-y-6">
+            
+            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-800 mb-3">🧰 旅途實用快捷鍵</h3>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <a href="https://www.leofoovillage.com.tw/UploadImg/Map/Map_TW.pdf" target="_blank" class="bg-white border border-amber-300 text-amber-700 py-2 px-3 rounded text-center font-bold hover:bg-amber-100">🗺️ 樂園高清地圖</a>
+                    <a href="https://reurl.cc/GaKnRD" target="_blank" class="bg-white border border-amber-300 text-amber-700 py-2 px-3 rounded text-center font-bold hover:bg-amber-100">🍽️ 餐廳線上訂位</a>
+                    <a href="https://www.taiwanbus.tw/eBUSPage/Query/QueryResult.aspx?rno=53500&rn=1601344863891&lan=C" target="_blank" class="bg-white border border-amber-300 text-amber-700 py-2 px-3 rounded text-center font-bold hover:bg-amber-100">🚌 5350 動態時刻</a>
+                    <a href="https://www.taiwanbus.tw/eBUSPage/json/TimeTableAPIByWeek.aspx?RouteId=5350&SearchDate=2026/04/10" target="_blank" class="bg-white border border-amber-300 text-amber-700 py-2 px-3 rounded text-center font-bold hover:bg-amber-100">🕒 5350 表定班表</a>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <h2 class="text-xl font-bold text-amber-700 border-b-2 border-amber-200 pb-2 mb-4">💰 預算評估明細 (客運為主)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <ul class="space-y-3 text-stone-600">
+                        <li class="flex justify-between items-center bg-stone-50 p-2 rounded">
+                            <span>🏨 兒童月專案 (含早/雙日門票/活動)</span>
+                            <span class="font-bold text-stone-800">約 NT$ 10,500</span>
+                        </li>
+                        <li class="flex justify-between items-center bg-stone-50 p-2 rounded">
+                            <span>🚌 交通 (台聯客運 5350 來回)</span>
+                            <span class="font-bold text-stone-800">約 NT$ 700</span>
+                        </li>
+                        <li class="flex justify-between items-center bg-stone-50 p-2 rounded">
+                            <span>🍽️ 餐飲開銷 (飯店晚餐+樂園兩日午餐)</span>
+                            <span class="font-bold text-stone-800">約 NT$ 4,500</span>
+                        </li>
+                        <li class="flex justify-between items-center bg-stone-50 p-2 rounded">
+                            <span>🎁 伴手禮與備用金</span>
+                            <span class="font-bold text-stone-800">約 NT$ 1,500</span>
+                        </li>
+                        <li class="flex justify-between items-center bg-amber-50 p-2 rounded border border-amber-200 mt-4">
+                            <span class="font-bold text-amber-800">預估總花費</span>
+                            <span class="font-bold text-amber-800 text-lg">NT$ 17,200</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="tab-content space-y-6">
+            
+            <div class="flex gap-2 mb-4">
+                <button onclick="filterDay('all')" class="px-3 py-1 bg-stone-200 rounded-lg text-sm filter-btn">全部顯示</button>
+                <button onclick="filterDay('day1')" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 rounded-lg text-sm filter-btn">Day 1 (動物主題)</button>
+                <button onclick="filterDay('day2')" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 rounded-lg text-sm filter-btn">Day 2 (設施主題)</button>
+            </div>
+
+            <div class="day-block day1 bg-white p-6 rounded-2xl shadow-sm border border-stone-100 relative">
+                <h2 class="text-xl font-bold text-amber-700 mb-4">🗓️ Day 1: 樂園動物探險與飯店狂歡 (4/30 週四)</h2>
+                
+                <div class="border-l-4 border-amber-300 ml-3 pl-4 space-y-6">
+                    
+                    <div class="relative bg-orange-50 p-4 rounded-lg border border-orange-100">
+                        <span class="absolute -left-8 top-4 text-xl">🚌</span>
+                        <h3 class="font-bold text-orange-800">08:20 交通 (主方案：客運 5350)</h3>
+                        <div class="mt-2 text-sm text-stone-700 space-y-2">
+                            <p><strong>上車點：</strong> 搭捷運至「景安站」，出站後於景安路站牌搭乘。</p>
+                            <p><strong>下車點：</strong> 「六福村主題遊樂園」站 (終點站)。</p>
+                            <p>💡 若選搭高鐵備案：09:15 板橋高鐵站出發 ➔ 高鐵新竹站 ➔ 轉乘計程車 (約$700) 抵達。</p>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🏨</span>
+                        <h3 class="font-bold text-stone-800">10:20 抵達：寄行李與領手環</h3>
+                        <p class="text-sm text-stone-600 mt-1">下車後步行至「六福莊」櫃檯寄放行李，領取「兩日入園手環」，並<strong>預約明天早上的樂園接駁車</strong>。</p>
+                    </div>
+
+                    <div class="relative bg-amber-50 p-4 rounded-lg border border-amber-200">
+                        <span class="absolute -left-8 top-4 text-xl">🦒</span>
+                        <h3 class="font-bold text-amber-800">10:45 【主攻】非洲部落：動物奇遇記</h3>
+                        <div class="mt-2 space-y-2 text-sm text-stone-700">
+                            <p class="font-bold">🎯 必玩搭乘設施：</p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>🚂 蒸汽火車 (無限制)：</strong> 近距離欣賞犀牛、斑馬、長頸鹿，長輩小孩都愛。</li>
+                                <li><strong>🚌 猛獸區巴士 (無限制)：</strong> 深入獅子、老虎區，安全又刺激。</li>
+                                <li><strong>🐎 小小驛馬車 (90cm+) / 🐒 猴子行大運 (90cm+)</strong></li>
+                            </ul>
+                            <p class="font-bold mt-2">🦩 必看步行展示區：</p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>親親園：</strong> 帶小朋友體驗餵食山羊。</li>
+                                <li><strong>狐獴/羊駝展示區：</strong> 看可愛萌樣，運氣好可體驗餵羊駝。</li>
+                                <li>沿途觀賞紅毛猩猩、紅鶴與黑熊。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🍽️</span>
+                        <h3 class="font-bold text-stone-800">12:30 午餐：綠洲餐廳 或 飯店好望角</h3>
+                        <p class="text-sm text-stone-600 mt-1">在動物區旁的綠洲餐廳吃麵食，或步行回飯店吃塔吉鍋，準備下午活動。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🏰</span>
+                        <h3 class="font-bold text-stone-800">14:00 非洲探險遊戲島</h3>
+                        <p class="text-sm text-stone-600 mt-1">平日 14:00 開放 (最晚入場20:00)。穿上防滑襪，讓小孩在室內瘋狂放電。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🌿</span>
+                        <h3 class="font-bold text-stone-800">15:00 迎賓秀 / 16:00 生態導覽</h3>
+                        <p class="text-sm text-stone-600 mt-1">大廳看表演，領房卡進房。16:00 參加免費的木棧道動物導覽。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🍲</span>
+                        <h3 class="font-bold text-stone-800">17:30 晚餐：鳳凰餐廳 (需預約 17:30場)</h3>
+                        <p class="text-sm text-stone-600 mt-1">18:00 餐廳有迎賓秀！邊吃客家仙草雞湯邊看表演。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🔥</span>
+                        <h3 class="font-bold text-stone-800">19:00 DIY & 20:10 草原盛會</h3>
+                        <p class="text-sm text-stone-600 mt-1">去兌換手作 DIY。接著參加晚會，用 20:45 的兒童故事時間收尾。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="day-block day2 bg-white p-6 rounded-2xl shadow-sm border border-stone-100 relative mt-6">
+                <h2 class="text-xl font-bold text-amber-700 mb-4">🗓️ Day 2: 設施大挑戰與劇場觀賞 (5/1 週五)</h2>
+                
+                <div class="border-l-4 border-amber-300 ml-3 pl-4 space-y-6">
+                    
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🥞</span>
+                        <h3 class="font-bold text-stone-800">07:30 早餐 (需預約) & 09:30 農場導覽</h3>
+                        <p class="text-sm text-stone-600 mt-1">吃飽後，09:00 看飛翔精靈，09:30 參加專案贈送的淺山農場導覽。隨後退房。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🚐</span>
+                        <h3 class="font-bold text-stone-800">10:15 免費接駁車入園</h3>
+                        <p class="text-sm text-stone-600 mt-1">搭乘昨天預約的接駁車直達六福村門口。</p>
+                    </div>
+
+                    <div class="relative bg-amber-50 p-4 rounded-lg border border-amber-200">
+                        <span class="absolute -left-8 top-4 text-xl">🎠</span>
+                        <h3 class="font-bold text-amber-800">10:30 【主攻】阿拉伯/南太平洋/大西部</h3>
+                        <div class="mt-2 space-y-2 text-sm text-stone-700">
+                            <p class="font-bold">🎯 必玩清單：</p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>🎠 阿里巴巴與四十大盜 (阿拉伯)：</strong> 經典旋轉木馬，必坐。</li>
+                                <li><strong>🦅 巨嘴鳥 (南太平洋/90cm+)：</strong> 可自己拉桿操控高低，4歲小孩最愛！</li>
+                            </ul>
+                            <p class="font-bold mt-2">🎯 次要備案清單：</p>
+                            <ul class="list-disc pl-5">
+                                <li>南太平洋：獨木舟 (兒童小船)、大海怪 (微刺激公轉)。</li>
+                                <li>阿拉伯皇宮：天馬行空 (溫和飛馬)。</li>
+                                <li>美國大西部：採礦車 (兒童雲霄飛車)、摩天篷車。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🍽️</span>
+                        <h3 class="font-bold text-stone-800">12:30 午餐：阿拉丁餐廳 或 牛排館</h3>
+                        <p class="text-sm text-stone-600 mt-1">推薦阿拉伯區的豬排咖哩飯，室內冷氣可避暑。</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 text-xl">🎩</span>
+                        <h3 class="font-bold text-stone-800">14:00 魔幻劇場 (避暑/休息)</h3>
+                        <p class="text-sm text-stone-600 mt-1">前往阿拉伯皇宮區觀賞魔幻劇場 (實際場次依當日園區公告為準)。在冷氣房裡看精彩表演，順便讓雙腳休息。</p>
+                    </div>
+
+                    <div class="relative bg-red-50 p-4 rounded-lg border border-red-200">
+                        <span class="absolute -left-8 top-4 text-xl">👋</span>
+                        <h3 class="font-bold text-red-800">16:40 準備離園 (17:00 閉園)</h3>
+                        <div class="mt-2 text-sm text-stone-700 space-y-2">
+                            <p><strong>上車點：</strong> 樂園門口客運站牌（與昨日下車處同）。</p>
+                            <p><strong>下車點：</strong> 捷運「景安站」，轉車回板橋。</p>
+                            <p>⚠️ <strong>備註：</strong> 閉園時段 5350 人潮較多，請提早至站牌排隊。若不想排隊，可選用高鐵備案（請飯店叫計程車至高鐵新竹站）。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="rides" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <h2 class="text-xl font-bold text-amber-700 mb-4">🎯 103公分孩童專屬 - 設施與動物攻略</h2>
+                <p class="text-sm text-stone-500 mb-4">已為您過濾掉身高限制不符的設施，請安心遊玩！</p>
+                
+                <h3 class="font-bold text-stone-800 bg-stone-100 p-2 rounded mt-4">⭐️ 必玩推薦 (優先排入)</h3>
+                <ul class="list-disc pl-6 text-sm text-stone-700 mt-2 space-y-1">
+                    <li><strong>蒸汽火車 (非洲區)：</strong> 無限制。近距離看草食動物。</li>
+                    <li><strong>猛獸區巴士 (非洲區)：</strong> 無限制。深入猛獸區。</li>
+                    <li><strong>巨嘴鳥 (南太平洋)：</strong> 90cm+ 需陪同。自行操控升降，超好玩！</li>
+                    <li><strong>旋轉木馬 (阿拉伯區)：</strong> 110cm以下需陪同。經典必坐。</li>
+                    <li><strong>親親園 (非洲區)：</strong> 步行區。餵食山羊體驗。</li>
+                </ul>
+
+                <h3 class="font-bold text-stone-800 bg-stone-100 p-2 rounded mt-4">✅ 次要備案 (人潮少時補玩)</h3>
+                <ul class="list-disc pl-6 text-sm text-stone-700 mt-2 space-y-1">
+                    <li><strong>採礦車 (大西部)：</strong> 90cm+ 需陪同。兒童版雲霄飛車初體驗。</li>
+                    <li><strong>猴子行大運 (非洲區)：</strong> 90cm+ 需陪同。空中腳踏車看猴子。</li>
+                    <li><strong>獨木舟 (南太平洋)：</strong> 90cm+。兒童專屬漂流小船。</li>
+                    <li><strong>大海怪 (南太平洋)：</strong> 90cm+ 需陪同。溫和旋轉。</li>
+                    <li><strong>天馬行空 (阿拉伯區)：</strong> 110cm以下需陪同。騎乘飛馬。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="prep" class="tab-content space-y-6">
+            
+            <div class="bg-red-50 border border-red-200 p-4 rounded-xl shadow-sm">
+                <h3 class="font-bold text-red-800 mb-2">⚠️ 餐廳訂位重要須知 (極重要)</h3>
+                <ul class="list-disc pl-5 text-sm text-red-700 space-y-1">
+                    <li><strong>訂位網址：</strong> <a href="https://reurl.cc/GaKnRD" target="_blank" class="underline font-bold text-blue-600">點此進入線上預約</a></li>
+                    <li><strong>時限：</strong> 建議入住前3天預約。最晚使用日前一日 15:00 前。</li>
+                    <li><strong>規則：</strong> 使用「訂房人姓名」；收到簡訊才算成功；保留15分鐘。</li>
+                    <li><strong>目標時段：</strong> 早餐請預約 7:30 或 8:00。晚餐強烈建議預約 <strong>17:30</strong> (為了看18:00迎賓秀)。</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <h2 class="text-xl font-bold text-amber-700 mb-4">🎒 智慧行李與預約清單</h2>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="newItemInput" placeholder="新增自訂物品..." class="flex-1 border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="addItem()" class="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition">新增</button>
+                </div>
+                <div id="checklist" class="space-y-2"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.target === tabId) {
+                    btn.classList.add('bg-orange-500', 'text-white');
+                    btn.classList.remove('bg-orange-100', 'text-orange-800');
+                } else {
+                    btn.classList.remove('bg-orange-500', 'text-white');
+                    btn.classList.add('bg-orange-100', 'text-orange-800');
+                }
+            });
+        }
+
+        function filterDay(day) {
+            const day1 = document.querySelector('.day1');
+            const day2 = document.querySelector('.day2');
+            if(day === 'all') { day1.style.display = 'block'; day2.style.display = 'block'; }
+            else if (day === 'day1') { day1.style.display = 'block'; day2.style.display = 'none'; }
+            else if (day === 'day2') { day1.style.display = 'none'; day2.style.display = 'block'; }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['🏨 專案套票', '🍽️ 餐飲', '🚌 交通(客運)', '🎁 伴手禮'],
+                    datasets: [{
+                        data: [10500, 4500, 700, 1500],
+                        backgroundColor: ['#f59e0b', '#fbbf24', '#fcd34d', '#fef3c7'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+            loadChecklist();
+        });
+
+        const defaultItems = [
+            { id: 1, text: "【極重要】完成早晚餐線上預約手續", checked: false },
+            { id: 2, text: "【必帶】大人與小孩的防滑襪 (遊戲島規定)", checked: false },
+            { id: 3, text: "大人的換洗衣物 (2天份)", checked: false },
+            { id: 4, text: "小孩的換洗衣物 (3-4套備用)", checked: false },
+            { id: 5, text: "防蚊液、防曬乳、兒童雨衣", checked: false }
+        ];
+
+        function loadChecklist() {
+            let items = JSON.parse(localStorage.getItem('tripChecklist_v6'));
+            if (!items || items.length === 0) { items = defaultItems; saveChecklist(items); }
+            renderChecklist(items);
+        }
+
+        function saveChecklist(items) { localStorage.setItem('tripChecklist_v6', JSON.stringify(items)); }
+
+        function renderChecklist(items) {
+            const container = document.getElementById('checklist');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('label');
+                div.className = 'check-item flex items-center p-3 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition border border-stone-100';
+                div.innerHTML = `
+                    <input type="checkbox" class="w-5 h-5 text-amber-600 rounded border-stone-300 focus:ring-amber-500 mr-3" 
+                           ${item.checked ? 'checked' : ''} onchange="toggleItem(${item.id})">
+                    <span class="text-stone-700 select-none flex-1">${item.text}</span>
+                    <button onclick="deleteItem(${item.id}, event)" class="text-stone-400 hover:text-red-500 ml-2">✖</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleItem(id) {
+            let items = JSON.parse(localStorage.getItem('tripChecklist_v6'));
+            const item = items.find(i => i.id === id);
+            if (item) { item.checked = !item.checked; saveChecklist(items); renderChecklist(items); }
+        }
+
+        function addItem() {
+            const input = document.getElementById('newItemInput');
+            const text = input.value.trim();
+            if (text) {
+                let items = JSON.parse(localStorage.getItem('tripChecklist_v6')) || [];
+                const newId = items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1;
+                items.push({ id: newId, text: text, checked: false });
+                saveChecklist(items); renderChecklist(items); input.value = '';
+            }
+        }
+
+        function deleteItem(id, event) {
+            event.preventDefault();
+            let items = JSON.parse(localStorage.getItem('tripChecklist_v6'));
+            items = items.filter(i => i.id !== id);
+            saveChecklist(items); renderChecklist(items);
+        }
+    </script>
+</body>
+</html>

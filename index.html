@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專屬旅遊行程：東京親子輕鬆遊</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, 'LiHei Pro', sans-serif; background-color: #FAFAF9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .checklist-text.checked { text-decoration: line-through; color: #9CA3AF; }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <header class="bg-amber-500 text-white p-6 shadow-md rounded-b-3xl">
+        <h1 class="text-2xl font-bold text-center">✈️ 東京 4天3夜 親子輕鬆遊</h1>
+        <p class="text-center text-amber-100 mt-2">2026/09/25 - 2026/09/28 | 2大1小 (4歲)</p>
+    </header>
+
+    <nav class="flex justify-center space-x-2 p-4 overflow-x-auto whitespace-nowrap sticky top-0 bg-[#FAFAF9] shadow-sm z-50">
+        <button onclick="switchTab('overview')" class="nav-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-orange-100 text-orange-800" data-target="overview">🏠 行程總覽</button>
+        <button onclick="switchTab('timeline')" class="nav-btn px-4 py-2 rounded-full text-sm font-medium transition-colors text-stone-500 hover:bg-stone-200" data-target="timeline">🕒 每日行程</button>
+        <button onclick="switchTab('food')" class="nav-btn px-4 py-2 rounded-full text-sm font-medium transition-colors text-stone-500 hover:bg-stone-200" data-target="food">🍴 美食地圖</button>
+        <button onclick="switchTab('prep')" class="nav-btn px-4 py-2 rounded-full text-sm font-medium transition-colors text-stone-500 hover:bg-stone-200" data-target="prep">🎒 行前準備</button>
+    </nav>
+
+    <main class="max-w-4xl mx-auto p-4 pb-20">
+
+        <section id="overview" class="tab-content active space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <h2 class="text-xl font-bold mb-4 text-stone-700">💰 預算分析 (總額預估：約 NT$ 96,000)</h2>
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/2 max-w-[250px]">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <div class="w-full md:w-1/2 space-y-3">
+                        <ul class="space-y-2 text-stone-600">
+                            <li class="flex justify-between border-b pb-1"><span>✈️ 機票 (傳統航空中段價位)</span> <span class="font-bold">NT$ 45,000</span></li>
+                            <li class="flex justify-between border-b pb-1"><span>🏨 住宿 (3晚 中等家庭房)</span> <span class="font-bold">NT$ 18,000</span></li>
+                            <li class="flex justify-between border-b pb-1"><span>🍴 餐飲 (含親子精緻餐廳)</span> <span class="font-bold">NT$ 15,000</span></li>
+                            <li class="flex justify-between border-b pb-1"><span>🚇 交通與門票 (水族館/teamLab)</span> <span class="font-bold">NT$ 8,000</span></li>
+                            <li class="flex justify-between pb-1"><span>🎁 伴手禮與雜支</span> <span class="font-bold">NT$ 10,000</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                <h2 class="text-lg font-bold text-amber-800 mb-2">💡 住宿建議區域：【上野】或【押上(晴空塔)】</h2>
+                <p class="text-stone-600 text-sm">由於帶著 4 歲小孩，建議選擇有京成電鐵或直達機場巴士的區域。上野周邊具備恩賜公園、動物園，適合小孩放電，且往來成田或羽田機場皆非常便利。</p>
+            </div>
+        </section>
+
+        <section id="timeline" class="tab-content">
+            <div class="flex justify-center space-x-2 mb-6">
+                <button onclick="filterDays('all')" class="day-filter px-3 py-1 rounded-md text-sm bg-stone-700 text-white" data-day="all">全部</button>
+                <button onclick="filterDays('day1')" class="day-filter px-3 py-1 rounded-md text-sm bg-stone-200 text-stone-700" data-day="day1">Day 1</button>
+                <button onclick="filterDays('day2')" class="day-filter px-3 py-1 rounded-md text-sm bg-stone-200 text-stone-700" data-day="day2">Day 2</button>
+                <button onclick="filterDays('day3')" class="day-filter px-3 py-1 rounded-md text-sm bg-stone-200 text-stone-700" data-day="day3">Day 3</button>
+                <button onclick="filterDays('day4')" class="day-filter px-3 py-1 rounded-md text-sm bg-stone-200 text-stone-700" data-day="day4">Day 4</button>
+            </div>
+
+            <div class="day-card mb-8 border-l-4 border-amber-400 pl-4 relative" data-day="day1">
+                <div class="absolute -left-3 top-0 w-5 h-5 rounded-full bg-amber-400 border-4 border-[#FAFAF9]"></div>
+                <h3 class="text-xl font-bold mb-3">Day 1：9/25 (五) 抵達東京，上野放電去</h3>
+                <a href="https://maps.google.com/?q=上野動物園+上野精養軒" target="_blank" class="inline-block mb-4 px-4 py-2 bg-stone-800 text-white rounded-lg text-sm shadow-sm hover:bg-stone-700">📍 今日路線導航 (Google Maps)</a>
+                
+                <div class="space-y-4 relative border-l-2 border-stone-200 ml-3 pl-4">
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-300"></div>
+                        <p class="text-xs text-stone-500 font-bold">13:00</p>
+                        <p class="font-bold">🛬 抵達東京，前往飯店寄放行李</p>
+                        <p class="text-sm text-stone-600">抵達後先至上野車站周邊飯店安頓。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">14:30</p>
+                        <p class="font-bold">🐼 <a href="https://maps.google.com/?q=上野動物園" class="text-orange-600 underline">上野動物園</a></p>
+                        <p class="text-sm text-stone-600">腹地廣大，非常適合 4 歲小孩跑跳放電。可以看到大貓熊與北極熊！</p>
+                    </div>
+                    <div class="relative bg-orange-50 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-orange-400"></div>
+                        <p class="text-xs text-orange-800 font-bold">16:30 🍡 下午點心 (中秋節應景)</p>
+                        <p class="text-sm font-bold mt-1">備案 A：兔月堂 (上野)</p>
+                        <p class="text-xs text-stone-600 mb-1">老字號和菓子，買個銅鑼燒當作中秋應景甜點。</p>
+                        <p class="text-sm font-bold">備案 B：上野公園星巴克</p>
+                        <p class="text-xs text-stone-600">公園內的絕美星巴克，戶外座位讓孩子能在一旁休息。</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">18:00 🍴 晚餐時段</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=上野精養軒" class="text-orange-600">上野精養軒 本店</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】百年洋食名店，口味非常溫和不鹹。推薦蛋包飯與漢堡排，空間寬敞對兒童極為友善。</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=音音+上野竹林草庵" class="text-orange-600">音音 上野竹林草庵</a></p>
+                        <p class="text-xs text-stone-600">【特點】提供舒適包廂的日式料理。有專屬兒童烏龍麵與極清淡的自製豆腐料理。</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100">
+                    <p class="font-bold">☔ 備用/雨天行程：</p>
+                    <p>若遇雨，可直接轉往上野公園內的「國立科學博物館」，裡面有超巨大的恐龍骨骼模型，室內吹冷氣逛展小孩絕對超愛！</p>
+                </div>
+            </div>
+
+            <div class="day-card mb-8 border-l-4 border-amber-400 pl-4 relative" data-day="day2">
+                <div class="absolute -left-3 top-0 w-5 h-5 rounded-full bg-amber-400 border-4 border-[#FAFAF9]"></div>
+                <h3 class="text-xl font-bold mb-3">Day 2：9/26 (六) 企鵝相伴與高空景觀</h3>
+                <a href="https://maps.google.com/?q=墨田水族館+東京晴空塔" target="_blank" class="inline-block mb-4 px-4 py-2 bg-stone-800 text-white rounded-lg text-sm shadow-sm hover:bg-stone-700">📍 今日路線導航 (Google Maps)</a>
+                
+                <div class="space-y-4 relative border-l-2 border-stone-200 ml-3 pl-4">
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">10:00</p>
+                        <p class="font-bold">🐧 <a href="https://maps.google.com/?q=墨田水族館" class="text-orange-600 underline">墨田水族館 (晴空塔內)</a></p>
+                        <p class="text-sm text-stone-600">可以超近距離看企鵝和美麗的金魚展，全程室內恆溫，帶小孩超輕鬆。</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">12:30 🍴 午餐時段 (皆在晴空塔內)</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=たまひで+いちの+東京ソラマチ" class="text-orange-600">たまひで いちの (親子丼)</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】百年老店分店。雞肉軟嫩、醬汁甜鹹適中，非常適合配飯給小朋友吃。</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=星乃珈琲店+東京ソラマチ店" class="text-orange-600">星乃珈琲店</a></p>
+                        <p class="text-xs text-stone-600">【特點】口味溫和的日式義大利麵與蛋包飯，小孩接受度極高。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">14:30</p>
+                        <p class="font-bold">🗼 東京晴空塔觀景台 & 🎁 橡子共和國</p>
+                        <p class="text-sm text-stone-600">搭乘快速電梯看全景。逛吉卜力周邊專賣店，可購買龍貓玩偶作紀念。</p>
+                    </div>
+                    <div class="relative bg-orange-50 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-orange-400"></div>
+                        <p class="text-xs text-orange-800 font-bold">16:00 🍰 下午點心</p>
+                        <p class="text-sm font-bold mt-1">備案 A：<a href="https://maps.google.com/?q=Qu'il+Fait+Bon+東京晴空塔" class="text-orange-600">Qu'il Fait Bon</a></p>
+                        <p class="text-xs text-stone-600 mb-1">日本超人氣水果派！鋪滿新鮮天然水果，孩子絕對喜愛。</p>
+                        <p class="text-sm font-bold">備案 B：祇園辻利 抹茶霜淇淋</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">18:30 🍴 晚餐時段</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=Sugimoto+東京ソラマチ" class="text-orange-600">Sugimoto (スギモト本店)</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】提供優質壽喜燒與涮涮鍋。選擇涮肉方式口味清淡無負擔，肉質極佳。</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=回転寿し+トリトン+東京ソラマチ店" class="text-orange-600">Toriton 迴轉壽司</a></p>
+                        <p class="text-xs text-stone-600">【特點】晴空塔最高評價壽司。提供玉子燒、茶碗蒸、熟蝦等眾多兒童熟食選擇。</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100">
+                    <p class="font-bold">☔ 備用/雨天行程：</p>
+                    <p>今日行程已全數安排在「晴空塔 Solamachi」商場內，完全不受風雨影響，大人小孩都能輕鬆逛！</p>
+                </div>
+            </div>
+
+            <div class="day-card mb-8 border-l-4 border-amber-400 pl-4 relative" data-day="day3">
+                <div class="absolute -left-3 top-0 w-5 h-5 rounded-full bg-amber-400 border-4 border-[#FAFAF9]"></div>
+                <h3 class="text-xl font-bold mb-3">Day 3：9/27 (日) 奇幻光影與無敵海景</h3>
+                <a href="https://maps.google.com/?q=teamLab+Planets+TOKYO+Lalaport豐洲" target="_blank" class="inline-block mb-4 px-4 py-2 bg-stone-800 text-white rounded-lg text-sm shadow-sm hover:bg-stone-700">📍 今日路線導航 (Google Maps)</a>
+                
+                <div class="space-y-4 relative border-l-2 border-stone-200 ml-3 pl-4">
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">10:00</p>
+                        <p class="font-bold">✨ <a href="https://maps.google.com/?q=teamLab+Planets+TOKYO" class="text-orange-600 underline">teamLab Planets TOKYO (豐洲)</a></p>
+                        <p class="text-sm text-stone-600">極致的光影與水互動體驗，可以讓小小孩踩水玩樂，視覺震撼十足！(需穿可捲起褲管的衣物)</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">12:30 🍴 午餐時段 (Lalaport 豐洲百貨)</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=100本のスプーン+豊洲" class="text-orange-600">100本のスプーン (100 Spoons) 🌟強力推薦</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】東京最棒親子餐廳！店內所有餐點都有「半份尺寸」，口味清爽健康，還有提供畫具讓小孩等餐時畫畫！</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=Aloha+Table+豊洲" class="text-orange-600">Aloha Table 豐洲店</a></p>
+                        <p class="text-xs text-stone-600">【特點】夏威夷風情，溫和的夏威夷漢堡排飯配蛋，小孩非常喜歡。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">15:00</p>
+                        <p class="font-bold">🛳️ 豐洲公園散步與放電</p>
+                        <p class="text-sm text-stone-600">Lalaport 商場外的無敵海景公園，有波浪造型溜滑梯與大草皮，吹著秋風十分愜意。</p>
+                    </div>
+                    <div class="relative bg-orange-50 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-orange-400"></div>
+                        <p class="text-xs text-orange-800 font-bold">16:30 🥞 下午點心</p>
+                        <p class="text-sm font-bold mt-1">備案 A：<a href="https://maps.google.com/?q=Butter+Premium+豊洲" class="text-orange-600">Butter Premium (豐洲)</a></p>
+                        <p class="text-xs text-stone-600 mb-1">綿密的窯烤舒芙蕾鬆餅，口感入口即化。</p>
+                        <p class="text-sm font-bold">備案 B：Lalaport 內新鮮果汁吧</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">18:30 🍴 晚餐時段 (返回市區 - 丸之內)</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=AWkitchen+TOKYO+新丸ビル" class="text-orange-600">AWkitchen TOKYO (新丸大樓店)</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】主打日本各地小農產直的「健康有機蔬菜」料理與清淡義大利麵，用餐環境舒適無負擔。</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=菜な+KITTE丸の内店" class="text-orange-600">菜NA KITTE丸之內店</a></p>
+                        <p class="text-xs text-stone-600">【特點】極度清淡的京都家常菜與豆腐料理，豆皿御膳營養滿分。</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100">
+                    <p class="font-bold">☔ 備用/雨天行程：</p>
+                    <p>豐洲 Lalaport 是超大室內購物中心。若下雨取消公園行程，可在百貨內租借童車悠閒逛街，或前往裡面的「KidZania 兒童職業體驗營」(需留意票況)。</p>
+                </div>
+            </div>
+
+            <div class="day-card border-l-4 border-amber-400 pl-4 relative" data-day="day4">
+                <div class="absolute -left-3 top-0 w-5 h-5 rounded-full bg-amber-400 border-4 border-[#FAFAF9]"></div>
+                <h3 class="text-xl font-bold mb-3">Day 4：9/28 (一) 卡通大集合與滿載而歸</h3>
+                <a href="https://maps.google.com/?q=東京車站一番街" target="_blank" class="inline-block mb-4 px-4 py-2 bg-stone-800 text-white rounded-lg text-sm shadow-sm hover:bg-stone-700">📍 今日路線導航 (Google Maps)</a>
+                
+                <div class="space-y-4 relative border-l-2 border-stone-200 ml-3 pl-4">
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">10:00</p>
+                        <p class="font-bold">🧸 <a href="https://maps.google.com/?q=東京駅一番街+東京キャラクターストリート" class="text-orange-600 underline">東京車站一番街 (東京動漫人物街)</a></p>
+                        <p class="text-sm text-stone-600">集結寶可夢中心、Tomica 多美小汽車、蠟筆小新等店鋪，是買給小孩禮物的最佳地點。</p>
+                    </div>
+                    <div class="relative bg-stone-100 p-3 rounded-lg mt-2">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-500"></div>
+                        <p class="text-xs text-stone-700 font-bold">12:30 🍴 午餐時段 (東京車站周邊)</p>
+                        <p class="text-sm font-bold mt-1">方案 A：<a href="https://maps.google.com/?q=つばめグリル+大丸東京店" class="text-orange-600">Tsubame Grill 燕子燒烤 (大丸百貨)</a></p>
+                        <p class="text-xs text-stone-600 mb-2">【特點】東京百年洋食名店的鋁箔紙包漢堡排，肉質極度軟嫩且非重香料，無敵兒童友善。</p>
+                        <p class="text-sm font-bold">方案 B：<a href="https://maps.google.com/?q=東京駅+斑鳩" class="text-orange-600">斑鳩拉麵 (東京車站拉麵街)</a></p>
+                        <p class="text-xs text-stone-600">【特點】若想吃拉麵，這家有提供較不鹹的清湯選項，且備有兒童餐具。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-amber-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">14:00</p>
+                        <p class="font-bold">🎁 最終伴手禮採買</p>
+                        <p class="text-sm text-stone-600">於大丸百貨或車站內購買 Tokyo Banana 蛋糕、NY Perfect Cheese 等點心。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[1.35rem] top-1 w-3 h-3 rounded-full bg-stone-400"></div>
+                        <p class="text-xs text-stone-500 font-bold">16:00</p>
+                        <p class="font-bold">✈️ 搭乘特快車前往機場，平安返家</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100">
+                    <p class="font-bold">☔ 備用/雨天行程：</p>
+                    <p>東京車站地下街與共構百貨極度龐大，完全可在室內度過最後一天的時光，直達機場免淋雨。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="food" class="tab-content">
+            <h2 class="text-xl font-bold mb-4 text-stone-700">精選親子友善餐廳 (排雷保證)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                    <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">日式洋食</span>
+                    <h3 class="font-bold text-lg mt-2">100本のスプーン (豐洲)</h3>
+                    <p class="text-sm text-stone-600">★★★★☆ 頂級親子餐廳，所有餐點皆有兒童半份版。</p>
+                    <p class="text-sm font-bold text-amber-600 mt-2">🌟 網友推薦必點：大人的兒童餐</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                    <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">百年洋食</span>
+                    <h3 class="font-bold text-lg mt-2">上野精養軒 本店</h3>
+                    <p class="text-sm text-stone-600">★★★★☆ 歷史悠久，空間寬敞，口味溫和。</p>
+                    <p class="text-sm font-bold text-amber-600 mt-2">🌟 網友推薦必點：多明格拉斯醬蛋包飯</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                    <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">有機義式</span>
+                    <h3 class="font-bold text-lg mt-2">AWkitchen TOKYO</h3>
+                    <p class="text-sm text-stone-600">★★★★☆ 大量使用新鮮小農蔬菜，無負擔。</p>
+                    <p class="text-sm font-bold text-amber-600 mt-2">🌟 網友推薦必點：農園Bagna Cauda (溫沙拉)</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                    <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">日式和食</span>
+                    <h3 class="font-bold text-lg mt-2">たまひで いちの (親子丼)</h3>
+                    <p class="text-sm text-stone-600">★★★★☆ 百年名店，雞肉滑嫩好入口。</p>
+                    <p class="text-sm font-bold text-amber-600 mt-2">🌟 網友推薦必點：特製親子丼</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                    <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">甜點</span>
+                    <h3 class="font-bold text-lg mt-2">Qu'il Fait Bon</h3>
+                    <p class="text-sm text-stone-600">★★★★☆ 天然新鮮水果製作，不甜膩。</p>
+                    <p class="text-sm font-bold text-amber-600 mt-2">🌟 網友推薦必點：季節限定水果派</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="prep" class="tab-content">
+            <div class="bg-blue-50 p-6 rounded-2xl mb-6 border border-blue-100">
+                <h2 class="text-xl font-bold mb-2 text-blue-900">🌤️ 9月底東京天氣預測與穿搭</h2>
+                <p class="text-sm text-blue-800 mb-2">平均氣溫：20°C - 26°C (白天微熱、早晚微涼)</p>
+                <p class="text-sm text-stone-700">穿搭建議：短袖加上薄長袖外套的「洋蔥式穿搭」。9月份降雨機率較高（有時有颱風），務必攜帶折疊傘與防雨外套。</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <h2 class="text-xl font-bold mb-4 text-stone-700">✅ 智慧行李清單 (自動記憶)</h2>
+                
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="newItemInput" placeholder="新增自訂物品..." class="flex-1 border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="addItem()" class="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600">新增</button>
+                </div>
+
+                <div id="checklistContainer" class="space-y-2">
+                    </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Tab 切換邏輯
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-orange-100', 'text-orange-800');
+                btn.classList.add('text-stone-500');
+            });
+            const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
+            activeBtn.classList.remove('text-stone-500');
+            activeBtn.classList.add('bg-orange-100', 'text-orange-800');
+        }
+
+        // 天數篩選邏輯
+        function filterDays(day) {
+            document.querySelectorAll('.day-filter').forEach(btn => {
+                btn.classList.remove('bg-stone-700', 'text-white');
+                btn.classList.add('bg-stone-200', 'text-stone-700');
+            });
+            const activeBtn = document.querySelector(`[data-day="${day}"]`);
+            activeBtn.classList.remove('bg-stone-200', 'text-stone-700');
+            activeBtn.classList.add('bg-stone-700', 'text-white');
+
+            document.querySelectorAll('.day-card').forEach(card => {
+                if (day === 'all' || card.getAttribute('data-day') === day) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 預算圖表 Chart.js
+        const ctx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['機票', '住宿', '餐飲', '交通/門票', '伴手禮'],
+                datasets: [{
+                    data: [45000, 18000, 15000, 8000, 10000],
+                    backgroundColor: ['#f59e0b', '#fbbf24', '#fcd34d', '#fef3c7', '#d6d3d1'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // LocalStorage 智慧清單邏輯
+        let checklist = JSON.parse(localStorage.getItem('tokyo_trip_checklist')) || [
+            { id: 1, text: '護照與影本', checked: false },
+            { id: 2, text: '兒童推車/背巾', checked: false },
+            { id: 3, text: '兒童常備藥 (退燒/止瀉)', checked: false },
+            { id: 4, text: '薄長袖外套 (防微涼與冷氣房)', checked: false },
+            { id: 5, text: '雨具/折疊輕便雨衣', checked: false }
+        ];
+
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = '';
+            checklist.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center p-2 hover:bg-stone-50 rounded';
+                div.innerHTML = `
+                    <input type="checkbox" id="item-${item.id}" ${item.checked ? 'checked' : ''} onchange="toggleItem(${item.id})" class="w-4 h-4 text-amber-500 rounded border-stone-300 focus:ring-amber-500">
+                    <label for="item-${item.id}" class="ml-3 text-sm font-medium checklist-text ${item.checked ? 'checked' : 'text-stone-700'} cursor-pointer flex-1">${item.text}</label>
+                    <button onclick="deleteItem(${item.id})" class="text-stone-400 hover:text-red-500 text-xs">刪除</button>
+                `;
+                container.appendChild(div);
+            });
+            saveChecklist();
+        }
+
+        function toggleItem(id) {
+            const item = checklist.find(i => i.id === id);
+            if (item) item.checked = !item.checked;
+            renderChecklist();
+        }
+
+        function addItem() {
+            const input = document.getElementById('newItemInput');
+            const text = input.value.trim();
+            if (text) {
+                checklist.push({ id: Date.now(), text: text, checked: false });
+                input.value = '';
+                renderChecklist();
+            }
+        }
+
+        function deleteItem(id) {
+            checklist = checklist.filter(i => i.id !== id);
+            renderChecklist();
+        }
+
+        function saveChecklist() {
+            localStorage.setItem('tokyo_trip_checklist', JSON.stringify(checklist));
+        }
+
+        // 初始化
+        renderChecklist();
+    </script>
+</body>
+</html>
